@@ -32,7 +32,7 @@ def rollDice(dice_input) :
     # 1. The number of dice to be rolled
     # 2. The type of dice to be rolled
     # 3. Any modifications to the roll
-    m = re.match("@Roll ([1-9])D([1-9][0-9]*) \+?([1-9])?", dice_input)
+    m = re.match("@Roll ([1-9][0-9]?)D([1-9][0-9]*)\s\+?\s([1-9])?", dice_input)
     num_dice = m.group(1)
     type_dice = m.group(2)
     mod = m.group(3) 
@@ -43,12 +43,15 @@ def rollDice(dice_input) :
     # Roll each die individually and add up the total
     while t > 0 :
         total_roll = total_roll + random.randint(1, int(type_dice))
+        print total_roll
         t = t - 1
     #Return different messages depending on if this dice roll contained a modifier.
-    if (int(mod) != 0) :
-        return num_dice + "D" + type_dice + " +" + mod + " = " + (str(total_roll) + mod)
+    if (mod) :
+        return num_dice + "D" + type_dice + " +" + mod + " = " + str((total_roll) + int(mod))
     else :
-        return num_dice + "D" + type_dice + " = " + (str(total_roll) + mod)
+        return num_dice + "D" + type_dice + " = " + str((total_roll))
+
+
 
 
 		
@@ -91,7 +94,7 @@ def getMail() :
 					payload = msg.get_payload()
 					email_body = extract_body(payload)
 					email_subject = msg['Subject']
-				typ, response = m.store(emailid, '+FLAGS', r'(\Seen)')
+				typ, response = m.store(emailid, '-FLAGS', r'(\Seen)')
 	finally:
 		try:
 			m.close()
@@ -105,12 +108,16 @@ def getMail() :
 	#if string.find(email_body, '@Roll') >= 0 :
 		# Create a message text to be sent as an email
 		message = "Dice Roll(s)! \n"
-		regex = re.compile('(.*)<p', re.DOTALL)
-		email_body = regex.match(email_body)
-		debugFile("Email_Body\n" + email_body + '\n')
-		m = re.findall('@Roll .*\n', email_body)
+		if "--You r" in email_body:
+			regex = re.compile('(.*)--You r', re.DOTALL)
+			match_body = regex.match(email_body)
+			email_body = match_body.group(1)
+		regex = re.compile('^@Roll .*\n', re.MULTILINE)
+		match = regex.findall(email_body)
+
+		#m = re.findall('^@Roll .*\n', email_body)
 		# For each @Roll, perform dice roll, add results to message text
-		for each_roll in m:
+		for each_roll in match:
 			message = message + rollDice(each_roll) + "\n"
 		# Send email
 		sendMail(message, email_subject)
