@@ -26,24 +26,31 @@ def sendMail(email_body, email_subject):
 # ROLL DICE---------------------------------------------------------------------------------------------
 
 def rollDice(dice_input) :
-	# Initialize the modifier variable, so errors are not thrown
-	mod = 0
-	# Initialize variables representing:
-	# 1. The number of dice to be rolled
-	# 2. The type of dice to be rolled
-	# 3. Any modifications to the roll
-	num_dice, type_dice, mod = re.match("@Roll ([1-9])D([1-9][0-9]*) \+?([1-9])?", dice_input)
-	# Seed the RNG with the current system time
-	random.seed()
-	total_roll = 0
-	# Roll each die individually and add up the total
-	while num_dice > 0 :
-		total_roll = total_roll + random.randint(1, type_dice)
-	#Return different messages depending on if this dice roll contained a modifier.
-	if (mod != 0) :
-		return num_dice + "D" + type_dice + " +" + mod + " = " + (total_roll + mod)
-	else :
-		return num_dice + "D" + type_dice + " = " + (total_roll + mod)
+    # Initialize the modifier variable, so errors are not thrown
+    mod = 0
+    # Initialize variables representing:
+    # 1. The number of dice to be rolled
+    # 2. The type of dice to be rolled
+    # 3. Any modifications to the roll
+    m = re.match("@Roll ([1-9])D([1-9][0-9]*) \+?([1-9])?", dice_input)
+    num_dice = m.group(1)
+    type_dice = m.group(2)
+    mod = m.group(3) 
+    t = int(num_dice)
+    # Seed the RNG with the current system time
+    random.seed()
+    total_roll = 0
+    # Roll each die individually and add up the total
+    while t > 0 :
+        total_roll = total_roll + random.randint(1, int(type_dice))
+        t = t - 1
+    #Return different messages depending on if this dice roll contained a modifier.
+    if (int(mod) != 0) :
+        return num_dice + "D" + type_dice + " +" + mod + " = " + (str(total_roll) + mod)
+    else :
+        return num_dice + "D" + type_dice + " = " + (str(total_roll) + mod)
+
+
 		
 # GET NEW EMAIL-----------------------------------------------------------------------------------------
 def getMail() :
@@ -83,7 +90,6 @@ def getMail() :
 					msg = email.message_from_string(response_part[1])
 					payload = msg.get_payload()
 					email_body = extract_body(payload)
-					debugFile("Email_Body\n" + email_body + '\n')
 					email_subject = msg['Subject']
 				typ, response = m.store(emailid, '+FLAGS', r'(\Seen)')
 	finally:
@@ -99,7 +105,10 @@ def getMail() :
 	#if string.find(email_body, '@Roll') >= 0 :
 		# Create a message text to be sent as an email
 		message = "Dice Roll(s)! \n"
-		m = re.findall('@Roll\w+\n', email_body)
+		regex = re.compile('(.*)<p', re.DOTALL)
+		email_body = regex.match(email_body)
+		debugFile("Email_Body\n" + email_body + '\n')
+		m = re.findall('@Roll .*\n', email_body)
 		# For each @Roll, perform dice roll, add results to message text
 		for each_roll in m:
 			message = message + rollDice(each_roll) + "\n"
