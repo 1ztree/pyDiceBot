@@ -1,4 +1,5 @@
 import smtplib, email, imaplib, os, re, random
+from email.mime.text import MIMEText
 
 #SEND REPLY EMAIL---------------------------------------------------------------------------------------	
 	
@@ -109,7 +110,7 @@ def getMail() :
 		pass
 
 def extract_body(payload) :
-	if isintance(payload, str) :
+	if isinstance(payload, str) :
 		return payload
 	else :
 		return '\n'.join([extract_body(part.get_payload()) for part in payload])
