@@ -4,9 +4,9 @@ from email.mime.text import MIMEText
 #SEND REPLY EMAIL---------------------------------------------------------------------------------------	
 	
 def sendMail(email_body, email_subject): 
-	user = 'pyDiceBot@gmail.com'
-	pwd = 'l0cal0ffense'
-	group = 'hotfixrpg@googlegroups.com'
+	user = ''
+	pwd = ''
+	group = ''
 
 	#Initialize the message container
 	msg = MIMEText(email_body)
@@ -59,10 +59,8 @@ def rollDice(dice_input) :
 def getMail() :
 	# directory where to save attachments (default: current)
 	detach_dir = '.'
-	# Login = pyDiceBot@gmail.com
-	# Password = l0cal0ffense
-	user = 'pyDiceBot@gmail.com'
-	pwd = 'l0cal0ffense'
+	user = ''
+	pwd = ''
 
 	# connecting to the gmail imap server
 	m = imaplib.IMAP4_SSL("imap.gmail.com", 993)
