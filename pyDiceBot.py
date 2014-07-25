@@ -43,7 +43,6 @@ def rollDice(dice_input) :
     # Roll each die individually and add up the total
     while t > 0 :
         total_roll = total_roll + random.randint(1, int(type_dice))
-        print total_roll
         t = t - 1
     #Return different messages depending on if this dice roll contained a modifier.
     if (mod) :
@@ -59,6 +58,8 @@ def rollDice(dice_input) :
 def getMail() :
 	# directory where to save attachments (default: current)
 	detach_dir = '.'
+	# Login = pyDiceBot@gmail.com
+	# Password = l0cal0ffense
 	user = ''
 	pwd = ''
 
@@ -93,36 +94,14 @@ def getMail() :
 					email_body = extract_body(payload)
 					email_subject = msg['Subject']
 				typ, response = m.store(emailid, '-FLAGS', r'(\Seen)')
+			parseEmail(email_body)
 	finally:
 		try:
 			m.close()
 		except:
 			pass
 		m.logout()
-	# getting the mail content
-	# Parse the email body string
-	# If 1+ @Roll exists 
-	if "@Roll" in email_body:
-	#if string.find(email_body, '@Roll') >= 0 :
-		# Create a message text to be sent as an email
-		message = "Dice Roll(s)! \n"
-		if "--You r" in email_body:
-			regex = re.compile('(.*)--You r', re.DOTALL)
-			match_body = regex.match(email_body)
-			email_body = match_body.group(1)
-		regex = re.compile('^@Roll .*\n', re.MULTILINE)
-		match = regex.findall(email_body)
-
-		#m = re.findall('^@Roll .*\n', email_body)
-		# For each @Roll, perform dice roll, add results to message text
-		for each_roll in match:
-			message = message + rollDice(each_roll) + "\n"
-		# Send email
-		sendMail(message, email_subject)
-		# Else get next email
-	else:
-		pass
-
+		
 def extract_body(payload) :
 	if isinstance(payload, str) :
 		return payload
@@ -133,6 +112,25 @@ def debugFile(text) :
 	f = open('debug.txt', 'w')
 	f.write(text)
 	f.close()
+	
+# Parse the email body string
+def parseEmail(email_body) :
+	# If 1+ @Roll exists 
+	if "@Roll" in email_body:
+		# Create a message text to be sent as an email
+		message = "Dice Roll(s)! \n"
+		if "--You r" in email_body:
+			regex = re.compile('(.*)--You r', re.DOTALL)
+			match_body = regex.match(email_body)
+			email_body = match_body.group(1)
+		else:
+			regex = re.compile('^@Roll .*\n', re.MULTILINE)
+			match = regex.findall(email_body)
+		# For each @Roll, perform dice roll, add results to message text
+		for each_roll in match:
+			message = message + rollDice(each_roll) + "\n"
+		# Send email
+		sendMail(message, email_subject)
 
 #Main Body Loop
 #	- Check new mail every X minutes.
