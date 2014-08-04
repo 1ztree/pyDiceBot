@@ -3,14 +3,15 @@ from email.mime.text import MIMEText
 
 #SEND REPLY EMAIL---------------------------------------------------------------------------------------	
 	
-def sendMail(email_body, email_subject): 
-	user = ''
-	pwd = ''
-	group = ''
+def sendMail(email_body, email_subject, email_messageid) :
+	user = 'pyDiceBot@gmail.com'
+	pwd = 'l0cal0ffense'
+	group = 'hotfixrpg@googlegroups.com'
 
 	#Initialize the message container
 	msg = MIMEText(email_body)
 	msg['Subject'] = email_subject
+	msg['Message-ID'] = email_messageid
 	msg['From'] = user
 	msg['To'] = group
 
@@ -54,14 +55,14 @@ def rollDice(dice_input) :
 
 
 		
-# GET NEW EMAIL-----------------------------------------------------------------------------------------
+# GET NEW EMAILS-----------------------------------------------------------------------------------------
 def getMail() :
 	# directory where to save attachments (default: current)
 	detach_dir = '.'
 	# Login = pyDiceBot@gmail.com
 	# Password = l0cal0ffense
-	user = ''
-	pwd = ''
+	user = 'pyDiceBot@gmail.com'
+	pwd = 'l0cal0ffense'
 
 	# connecting to the gmail imap server
 	m = imaplib.IMAP4_SSL("imap.gmail.com", 993)
@@ -83,6 +84,8 @@ def getMail() :
 	#		containing each requested dice roll.
 	email_body = ""
 	email_subject = ""
+	email_messageid = ""
+	
 	try:
 		for emailid in items[0].split() :
 			# fetching the mail, "`(RFC822)`" means "get the whole stuff", but you can ask for headers only, etc
@@ -92,9 +95,15 @@ def getMail() :
 					msg = email.message_from_string(response_part[1])
 					payload = msg.get_payload()
 					email_body = extract_body(payload)
+					##
+					debugFile(email_body)
+					##
 					email_subject = msg['Subject']
+					email_messageid = msg['Message-ID']
 				typ, response = m.store(emailid, '-FLAGS', r'(\Seen)')
-			parseEmail(email_body)
+			
+			if not msg['From'] == "pydicebot@gmail.com" :
+				parseEmail(email_body, email_subject, email_messageid)
 	finally:
 		try:
 			m.close()
@@ -114,7 +123,7 @@ def debugFile(text) :
 	f.close()
 	
 # Parse the email body string
-def parseEmail(email_body) :
+def parseEmail(email_body, email_subject, email_messageid) :
 	# If 1+ @Roll exists 
 	if "@Roll" in email_body:
 		# Create a message text to be sent as an email
@@ -130,7 +139,7 @@ def parseEmail(email_body) :
 		for each_roll in match:
 			message = message + rollDice(each_roll) + "\n"
 		# Send email
-		sendMail(message, email_subject)
+		sendMail(message, email_subject, email_messageid)
 
 #Main Body Loop
 #	- Check new mail every X minutes.
