@@ -4,9 +4,9 @@ from email.mime.text import MIMEText
 #SEND REPLY EMAIL---------------------------------------------------------------------------------------	
 	
 def sendMail(email_body, email_subject, email_messageid) :
-	user = 'pyDiceBot@gmail.com'
-	pwd = 'l0cal0ffense'
-	group = 'hotfixrpg@googlegroups.com'
+	user = ''
+	pwd = ''
+	group = ''
 
 	#Initialize the message container
 	msg = MIMEText(email_body)
@@ -27,29 +27,32 @@ def sendMail(email_body, email_subject, email_messageid) :
 # ROLL DICE---------------------------------------------------------------------------------------------
 
 def rollDice(dice_input) :
-    # Initialize the modifier variable, so errors are not thrown
-    mod = 0
-    # Initialize variables representing:
-    # 1. The number of dice to be rolled
-    # 2. The type of dice to be rolled
-    # 3. Any modifications to the roll
-    m = re.match("@Roll ([1-9][0-9]?)D([1-9][0-9]*)\s\+?\s([1-9])?", dice_input)
-    num_dice = m.group(1)
-    type_dice = m.group(2)
-    mod = m.group(3) 
-    t = int(num_dice)
-    # Seed the RNG with the current system time
-    random.seed()
-    total_roll = 0
-    # Roll each die individually and add up the total
-    while t > 0 :
-        total_roll = total_roll + random.randint(1, int(type_dice))
-        t = t - 1
-    #Return different messages depending on if this dice roll contained a modifier.
-    if (mod) :
-        return num_dice + "D" + type_dice + " +" + mod + " = " + str((total_roll) + int(mod))
-    else :
-        return num_dice + "D" + type_dice + " = " + str((total_roll))
+	# Initialize the modifier variable, so errors are not thrown
+	mod = 0
+	# Initialize variables representing:
+	# 1. The number of dice to be rolled
+	# 2. The type of dice to be rolled
+	# 3. Any modifications to the roll
+	try :
+		m = re.match("@Roll ([1-9][0-9]?)D([1-9][0-9]*)\s\+?\s?([1-9])?", dice_input)
+		num_dice = m.group(1)
+		type_dice = m.group(2)
+		mod = m.group(3) 
+		t = int(num_dice)
+		# Seed the RNG with the current system time
+		random.seed()
+		total_roll = 0
+		# Roll each die individually and add up the total
+		while t > 0 :
+			total_roll = total_roll + random.randint(1, int(type_dice))
+			t = t - 1
+		#Return different messages depending on if this dice roll contained a modifier.
+		if (mod) :
+			return num_dice + "D" + type_dice + " +" + mod + " = " + str((total_roll) + int(mod))
+		else :
+			return num_dice + "D" + type_dice + " = " + str((total_roll))
+	except :
+		return "\n\nDice roll was improperly formatted. Please format your dice roll request in the following form : \n@Roll XDY + Z where X, Y, are integers between 1-99 and Z is an integer between 0-9.\n\n"
 
 
 
@@ -59,10 +62,10 @@ def rollDice(dice_input) :
 def getMail() :
 	# directory where to save attachments (default: current)
 	detach_dir = '.'
-	# Login = pyDiceBot@gmail.com
-	# Password = l0cal0ffense
-	user = 'pyDiceBot@gmail.com'
-	pwd = 'l0cal0ffense'
+	# Login = 
+	# Password =
+	user = ''
+	pwd = ''
 
 	# connecting to the gmail imap server
 	m = imaplib.IMAP4_SSL("imap.gmail.com", 993)
@@ -100,7 +103,7 @@ def getMail() :
 					##
 					email_subject = msg['Subject']
 					email_messageid = msg['Message-ID']
-				typ, response = m.store(emailid, '-FLAGS', r'(\Seen)')
+				typ, response = m.store(emailid, '+FLAGS', r'(\Seen)')
 			
 			if not msg['From'] == "pydicebot@gmail.com" :
 				parseEmail(email_body, email_subject, email_messageid)
