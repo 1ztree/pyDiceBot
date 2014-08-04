@@ -146,4 +146,10 @@ def parseEmail(email_body, email_subject, email_messageid) :
 
 #Main Body Loop
 #	- Check new mail every X minutes.
-getMail()
+isquit = False
+while True :
+	getMail()
+	if msvcrt.kbhit() :
+		break
+	time.sleep(300)
+	
