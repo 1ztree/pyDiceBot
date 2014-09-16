@@ -51,7 +51,7 @@ def rollDice(dice_input) :
 		while t > 0 :
 			each_roll.append(random.randint(1, int(type_dice)))
 			total_roll = total_roll + each_roll[num]
-			if (each_roll[num] == 5 | each_roll[num] == 6) :
+			if (each_roll[num] == 5 or each_roll[num] == 6) :
 				hits += 1
 			if (each_roll[num] == 1) :
 				glitch +=1
@@ -77,8 +77,8 @@ def rollDice(dice_input) :
 					roll_message = roll_message + " + "
 				t = t - 1
 			roll_message =  roll_message + " = " + str((total_roll))
-		roll_message = roll_message + "\n\nNumber of Successes: " + hits
-		if (glitch >= (num_dice / 2)) :
+		roll_message = roll_message + "\n\nNumber of Successes: " + str(hits)
+		if (glitch > (int(num_dice) / 2)) :
 			if (hits == 0) :
 				roll_message = roll_message + "\nCritical Glitch!"
 			else:
@@ -86,7 +86,6 @@ def rollDice(dice_input) :
 		return roll_message
 	except :
 		return "\n\nDice roll was improperly formatted. Please format your dice roll request in the following form : \n XDY + Z where X, Y, are integers between 1-99 and Z is an integer between 0-9.\n\n"
-
 
 
 
