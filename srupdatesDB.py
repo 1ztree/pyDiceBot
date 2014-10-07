@@ -7,9 +7,11 @@ init_list = Initiative()
 #TODO:
 # 1. Define initiativeMessage, newRoundMessage, roundNotOver, and endCombatMessage functions.
 # 2. Define file operations for Initiative.py's updateInitiative and endCombat functions.
-# 3. Refactor sendMail, buildMessage, modMessage, standardMessage, getMail, and npcMessage functions.
-# 4. TEST.
-# 5. Push to live.
+# 3. Define file operations for users and passwords to get and send mail.
+# 4. Refactor sendMail, buildMessage, modMessage, standardMessage, getMail, and npcMessage functions.
+# 5. Refactor Initiative.py and Character.py
+# 6. TEST.
+# 7. Push to live.
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #SEND REPLY EMAIL---------------------------------------------------------------------------------------	
 	
