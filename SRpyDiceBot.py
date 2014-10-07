@@ -36,7 +36,7 @@ def rollDice(dice_input) :
 	# 2. The type of dice to be rolled
 	# 3. Any modifications to the roll
 	try :
-		m = re.match("@Roll ([1-9][0-9]?)D([1-9][0-9]?)\s?\+?\s?([1-9])?", dice_input)
+		m = re.match("@Roll ([1-9][0-9]?)D([1-9][0-9]?)\s?\+?\s?([1-9][0-9]?)?", dice_input)
 		num_dice = m.group(1)
 		type_dice = m.group(2)
 		mod = m.group(3) 
