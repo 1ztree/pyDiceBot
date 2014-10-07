@@ -15,7 +15,7 @@ def sendMail(email_body, email_subject, email_messageid) :
 	msg['From'] = user
 	msg['To'] = group
 
-	
+	 
 	server = smtplib.SMTP("smtp.gmail.com", 587)
 	server.ehlo()
 	server.starttls()
